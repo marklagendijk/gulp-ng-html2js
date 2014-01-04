@@ -1,6 +1,8 @@
 # gulp-ng-html2js [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> ng-html2js plugin for [gulp](https://github.com/wearefractal/gulp)
+> A plugin for [gulp](https://github.com/wearefractal/gulp) which generates AngularJS modules, which pre-load your HTML
+code into the [$templateCache](http://docs.angularjs.org/api/ng.$templateCache). This way AngularJS doens't need to
+request the actual HTML files anymore.
 
 ## Usage
 
@@ -22,6 +24,29 @@ gulp.src("./partials/*.html")
 	}))
 	.pipe(gulp.dest("./dist/partials"));
 ```
+
+The main reason to use this module would be optimization. By pre-loading the HTML files, you can spare requests and
+loading time when the files are actually needed. When you are optimizing, you should do it properly. So, we should add
+the following plugins: `gulp-minify-html`, `gulp-uglify`, and `gulp-concat`:
+
+```javascript
+var ngHtml2Js = require("gulp-ng-html2js");
+var minifyHtml = require("gulp-minify-html");
+var concat = require("gulp-concat");
+var uglify = require("gulp-uglify");
+
+gulp.src("./partials/*.html")
+	.pipe(minifyHtml())
+	.pipe(ngHtml2Js({
+		moduleName: "MyAwesomePartials",
+		prefix: "/partials"
+	}))
+	.pipe(concat("partials.min.js"))
+	.pipe(uglify())
+	.pipe(gulp.dest("./dist/partials"));
+```
+
+This way you end up with 1 single, minified Javascript file, which pre-loads all the (minified) HTML templates.
 
 ## API
 
