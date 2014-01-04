@@ -1,7 +1,7 @@
 {
   "name": "gulp-ng-html2js",
-  "version": "0.1.1",
-  "description": "A Gulp plugin which generates Javascript code which loads the HTML files of your AngularJS app into the $templateCache.",
+  "version": "0.1.2",
+  "description": "A Gulp plugin which generates AngularJS modules, which pre-load your HTML code into the $templateCache. This way AngularJS doens't need to request the actual HTML files anymore.",
   "keywords": [
     "gulpplugin",
 	"ng-html2js",

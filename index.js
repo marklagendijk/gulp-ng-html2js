@@ -17,6 +17,9 @@ var SINGLE_MODULE_TPL = '(function(module) {\n' +
 	'})();\n';
 
 /**
+ * Converts HTML files into Javascript files which contain an AngularJS module which automatically pre-loads the HTML
+ * file into the [$templateCache](http://docs.angularjs.org/api/ng.$templateCache). This way AngularJS doens't need to
+ * request the actual HTML file anymore.
  * @param [options] - The plugin options
  * @param [options.moduleName] - The name of the module which will be generated. When omitted the fileUrl will be used.
  * @param [options.stripPrefix] - The prefix which should be stripped from the file path
