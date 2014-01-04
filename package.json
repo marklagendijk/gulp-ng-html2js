@@ -13,6 +13,7 @@
   "bugs": "https://github.com/marklagendijk/gulp-ng-html2js/issues",
   "author": {
     "name": "Mark Lagendijk",
+	"email": "mark@lagendijk.info",
     "url": "https://github.com/marklagendijk"
   },
   "main": "./index.js",
