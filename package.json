@@ -1,0 +1,43 @@
+{
+  "name": "gulp-ng-html2js",
+  "version": "0.1.0",
+  "description": "A Gulp plugin which generates Javascript code which loads the HTML files of your AngularJS app into the $templateCache.",
+  "keywords": [
+    "gulpplugin",
+	"ng-html2js",
+	"angular",
+	"html2js",
+	"angularjs"
+  ],
+  "homepage": "https://github.com/marklagendijk/gulp-ng-html2js",
+  "bugs": "https://github.com/marklagendijk/gulp-ng-html2js/issues",
+  "author": {
+    "name": "Mark Lagendijk",
+    "url": "https://github.com/marklagendijk"
+  },
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marklagendijk/gulp-ng-html2js.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "event-stream": "*"
+  },
+  "devDependencies": {
+    "mocha": "~1.14.0",
+    "should": "~2.1.0",
+    "gulp-util": "~2.2.0"
+  },
+  "engines": {
+    "node": ">=0.8.0",
+    "npm": ">=1.2.10"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+var util = require("util");
+var es = require("event-stream");
+
+var TEMPLATE = 'angular.module(\'%s\', []).run(function($templateCache) {\n' +
+	'  $templateCache.put(\'%s\',\n    \'%s\');\n' +
+	'});\n';
+
+var SINGLE_MODULE_TPL = '(function(module) {\n' +
+	'try {\n' +
+	'  module = angular.module(\'%s\');\n' +
+	'} catch (e) {\n' +
+	'  module = angular.module(\'%s\', []);\n' +
+	'}\n' +
+	'module.run(function($templateCache) {\n' +
+	'  $templateCache.put(\'%s\',\n    \'%s\');\n' +
+	'});\n' +
+	'})();\n';
+
+/**
+ * @param [options] - The plugin options
+ * @param [options.moduleName] - The name of the module which will be generated. When omitted the fileUrl will be used.
+ * @param [options.stripPrefix] - The prefix which should be stripped from the file path
+ * @param [options.prefix] - The prefix which should be added to the start of the url
+ * @returns {stream}
+ */
+module.exports = function(options){
+	"use strict";
+
+	function ngHtml2Js(file, callback){
+		if(file.isStream()){
+			return callback(new Error("gulp-ng-html2js: Streaming not supported"));
+		}
+
+		if(file.isBuffer()){
+			var filePath = getFileUrl(file, options);
+			file.contents = new Buffer(generateModuleDeclaration(filePath, String(file.contents), options));
+			file.path = file.path.replace(".html", ".js");
+		}
+
+		return callback(null, file);
+	}
+
+	/**
+	 * Generates the Javascript code containing the AngularJS module which puts the HTML file into the $templateCache.
+	 * @param fileUrl - The url with which the HTML will be registered in the $templateCache.
+	 * @param contents - The contents of the HTML file.
+	 * @param [options] - The plugin options
+	 * @param [options.moduleName] - The name of the module which will be generated. When omitted the fileUrl will be used.
+	 * @returns {string} - The generated Javascript code.
+	 */
+	function generateModuleDeclaration(fileUrl, contents, options){
+		var escapedContent = escapeContent(contents);
+		if(options && options.moduleName){
+			return util.format(SINGLE_MODULE_TPL, options.moduleName, options.moduleName, fileUrl, escapedContent);
+		}
+		else{
+			return util.format(TEMPLATE, fileUrl, fileUrl, escapedContent);
+		}
+	}
+
+	/**
+	 * Generates the url of a file.
+	 * @param file - The file for which a url should be generated
+	 * @param [options] - The plugin options
+	 * @param [options.stripPrefix] - The prefix which should be stripped from the file path
+	 * @param [options.prefix] - The prefix which should be added to the start of the url
+	 * @returns {string}
+	 */
+	function getFileUrl(file, options){
+		// Start with the relative file path
+		var url = file.relative;
+
+		// Replace '\' with '/' (Windows)
+		url = url.replace(/\\/g, '/');
+
+		// Remove the stripPrefix
+		if(options && options.stripPrefix && url.indexOf(options.stripPrefix) === 0){
+			url = url.replace(options.stripPrefix, '');
+		}
+		// Add the prefix
+		if(options && options.prefix){
+			url = options.prefix + url;
+		}
+
+		return url;
+	}
+
+	/**
+	 * Escapes the content of an string so it can be used in a Javascript string declaration
+	 * @param {string} content
+	 * @returns {string}
+	 */
+	function escapeContent(content){
+		return content.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\r?\n/g, '\\n\' +\n    \'');
+	}
+
+	return es.map(ngHtml2Js);
+};
