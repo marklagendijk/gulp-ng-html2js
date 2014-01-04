@@ -1,4 +1,4 @@
-angular.module('/partials/fixtures/example.html', []).run(function($templateCache) {
+angular.module('/partials/fixtures/example.html', []).run(['$templateCache', function($templateCache) {
   $templateCache.put('/partials/fixtures/example.html',
     '<!doctype html>\n' +
     '<html>\n' +
@@ -33,4 +33,4 @@ angular.module('/partials/fixtures/example.html', []).run(function($templateCach
     '	</body>\n' +
     '</html>\n' +
     '');
-});
+}]);

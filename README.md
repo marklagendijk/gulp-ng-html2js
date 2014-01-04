@@ -36,7 +36,10 @@ var concat = require("gulp-concat");
 var uglify = require("gulp-uglify");
 
 gulp.src("./partials/*.html")
-	.pipe(minifyHtml())
+	.pipe(minifyHtml({
+		empty: true,
+		quotes: true
+	}))
 	.pipe(ngHtml2Js({
 		moduleName: "MyAwesomePartials",
 		prefix: "/partials"

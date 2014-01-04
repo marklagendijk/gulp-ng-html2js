@@ -1,4 +1,4 @@
-angular.module('fixtures/example.html', []).run(function($templateCache) {
+angular.module('fixtures/example.html', []).run(['$templateCache', function($templateCache) {
   $templateCache.put('fixtures/example.html',
     '<!doctype html>\n' +
     '<html>\n' +
@@ -33,4 +33,4 @@ angular.module('fixtures/example.html', []).run(function($templateCache) {
     '	</body>\n' +
     '</html>\n' +
     '');
-});
+}]);
