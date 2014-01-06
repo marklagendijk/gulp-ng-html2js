@@ -1,7 +1,7 @@
 # gulp-ng-html2js [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
 > A plugin for [gulp](https://github.com/wearefractal/gulp) which generates AngularJS modules, which pre-load your HTML
-code into the [$templateCache](http://docs.angularjs.org/api/ng.$templateCache). This way AngularJS doens't need to
+code into the [$templateCache](http://docs.angularjs.org/api/ng.$templateCache). This way AngularJS doesn't need to
 request the actual HTML files anymore.
 
 ## Usage
@@ -38,6 +38,7 @@ var uglify = require("gulp-uglify");
 gulp.src("./partials/*.html")
 	.pipe(minifyHtml({
 		empty: true,
+		spare: true,
 		quotes: true
 	}))
 	.pipe(ngHtml2Js({

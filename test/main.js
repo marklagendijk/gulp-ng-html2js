@@ -1,17 +1,15 @@
 /*global describe, it*/
 "use strict";
 
-var fs = require("fs"),
-	es = require("event-stream"),
-	should = require("should");
 require("mocha");
+var fs = require("fs");
+var path = require("path");
+var es = require("event-stream");
+var should = require("should");
+var gutil = require("gulp-util");
+var ngHtml2Js = require("../");
 
-var gutil = require("gulp-util"),
-	ngHtml2Js = require("../");
-
-describe("gulp-ng-html2js", function () {
-
-
+describe("gulp-ng-html2js", function(){
 	describe("when file is provided via buffer", function(){
 		it("should generate the angular module", function(done){
 			var expectedFile = new gutil.File({
@@ -33,7 +31,7 @@ describe("gulp-ng-html2js", function () {
 			});
 
 			var params = {
-				moduleName: 'myAwesomePartials'
+				moduleName: "myAwesomePartials"
 			};
 
 			testBufferedFile(params, expectedFile, done);
@@ -48,7 +46,7 @@ describe("gulp-ng-html2js", function () {
 			});
 
 			var params = {
-				prefix: '/partials/'
+				prefix: "/partials/"
 			};
 
 			testBufferedFile(params, expectedFile, done);
@@ -63,7 +61,7 @@ describe("gulp-ng-html2js", function () {
 			});
 
 			var params = {
-				stripPrefix: 'fixtures/'
+				stripPrefix: "fixtures/"
 			};
 
 			testBufferedFile(params, expectedFile, done);
@@ -79,17 +77,13 @@ describe("gulp-ng-html2js", function () {
 
 			var stream = ngHtml2Js(params);
 
-			stream.on("error", function(err){
-				should.exist(err);
-				done(err);
-			});
-
 			stream.on("data", function(newFile){
-
 				should.exist(newFile);
-				should.exist(newFile.contents);
+				path.extname(newFile.path).should.equal(".js");
 
+				should.exist(newFile.contents);
 				String(newFile.contents).should.equal(String(expectedFile.contents));
+
 				done();
 			});
 
@@ -98,9 +92,26 @@ describe("gulp-ng-html2js", function () {
 		}
 	});
 
+	it("should pass on files which are null", function(done){
+		var srcFile = new gutil.File({
+			path: "test/fixtures/example.html",
+			cwd: "test/",
+			base: "test/fixtures",
+			contents: null
+		});
 
-	it("should error on stream", function (done) {
+		var stream = ngHtml2Js();
 
+		stream.on("data", function(newFile){
+			should.not.exist(newFile.contents);
+			done();
+		});
+
+		stream.write(srcFile);
+		stream.end();
+	});
+
+	it("should error on stream", function(done){
 		var srcFile = new gutil.File({
 			path: "test/fixtures/example.html",
 			cwd: "test/",
@@ -108,18 +119,15 @@ describe("gulp-ng-html2js", function () {
 			contents: fs.createReadStream("test/fixtures/example.html")
 		});
 
-		var stream = ngHtml2Js({
-			moduleName: 'myAwesomePartials',
-			prefix: '/partials/'
-		});
+		var stream = ngHtml2Js();
 
-		stream.on("error", function(err) {
+		stream.on("error", function(err){
 			should.exist(err);
 			done();
 		});
 
-		stream.on("data", function (newFile) {
-			newFile.contents.pipe(es.wait(function(err, data) {
+		stream.on("data", function(newFile){
+			newFile.contents.pipe(es.wait(function(err, data){
 				done(err);
 			}));
 		});
