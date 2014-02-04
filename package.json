@@ -25,7 +25,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "gulp-util": "*",
+    "gulp-util": "~2.1.4",
 	"map-stream": "*"
   },
   "devDependencies": {
