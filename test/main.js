@@ -22,6 +22,21 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(null, expectedFile, done);
 		});
 
+		it("should use options.base to resolve the relative file path for the url in the generated file", function(done){
+			var expectedFile = new gutil.File({
+				path: "test/expected/exampleWithBase.js",
+				cwd: "test/",
+				base: "test/expected",
+				contents: fs.readFileSync("test/expected/exampleWithBase.js")
+			});
+
+			var params = {
+				base: "other_test_folder"
+			};
+
+			testBufferedFile(params, expectedFile, done);
+		});
+
 		it("should use options.moduleName when provided", function(done){
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithModuleName.js",

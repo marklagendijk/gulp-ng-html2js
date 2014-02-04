@@ -1,4 +1,5 @@
 var util = require("util");
+var path = require("path");
 var gutil = require("gulp-util");
 var map = require("map-stream");
 
@@ -72,7 +73,8 @@ module.exports = function(options){
 	 */
 	function getFileUrl(file, options){
 		// Start with the relative file path
-		var url = file.relative;
+		var base = (options && options.base) ? options.base : file.base;
+		var url = path.relative(base, file.path);
 
 		// Replace '\' with '/' (Windows)
 		url = url.replace(/\\/g, "/");

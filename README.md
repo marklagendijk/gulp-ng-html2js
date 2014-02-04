@@ -71,6 +71,11 @@ Type: `String`
 
 The prefix which should be subtracted from the file path to generate the file url.
 
+#### options.base
+Type: `String`
+
+The base directory used for resolving the relative file path to generate the file url. Falls back to regular file.base if unset.
+
 
 ## License
 
