@@ -37,6 +37,22 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
+		it("should use options.moduleName && options.declareModule when provided", function(done){
+			var expectedFile = new gutil.File({
+				path: "test/expected/exampleWithModuleName.js",
+				cwd: "test/",
+				base: "test/expected",
+				contents: fs.readFileSync("test/expected/exampleWithModuleNameNoGenerate.js")
+			});
+
+			var params = {
+				moduleName: "myAwesomePartials",
+				declareModule: false
+			};
+
+			testBufferedFile(params, expectedFile, done);
+		});
+
 		it("should add options.prefix to the url in the generated file", function(done){
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithPrefix.js",
