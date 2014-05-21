@@ -61,6 +61,13 @@ Type: `String`
 
 The name of the generated AngularJS module. Uses the file url if omitted.
 
+#### options.declareModule
+Type: `Boolean`
+
+Whether to attempt to declare a new module (used with options.moduleName).  True if omitted.
+
+Set this to false if options.moduleName is already declared.
+
 #### options.prefix
 Type: `String`
 

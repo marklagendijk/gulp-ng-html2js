@@ -6,6 +6,10 @@ var TEMPLATE = "angular.module(\'%s\', []).run([\'$templateCache\', function($te
 	"  $templateCache.put(\'%s\',\n    \'%s\');\n" +
 	"}]);\n";
 
+var TEMPLATE_DECLARED_MODULE = "angular.module(\'%s\').run([\'$templateCache\', function($templateCache) {\n" +
+	"  $templateCache.put(\'%s\',\n    \'%s\');\n" +
+	"}]);\n";
+
 var SINGLE_MODULE_TPL = "(function(module) {\n" +
 	"try {\n" +
 	"  module = angular.module(\'%s\');\n" +
@@ -23,6 +27,7 @@ var SINGLE_MODULE_TPL = "(function(module) {\n" +
  * request the actual HTML file anymore.
  * @param [options] - The plugin options
  * @param [options.moduleName] - The name of the module which will be generated. When omitted the fileUrl will be used.
+ * @param [options.declareModule] - Whether to try to create the module. Default true, if false it will not create options.moduleName.
  * @param [options.stripPrefix] - The prefix which should be stripped from the file path
  * @param [options.prefix] - The prefix which should be added to the start of the url
  * @returns {stream}
@@ -55,7 +60,11 @@ module.exports = function(options){
 	function generateModuleDeclaration(fileUrl, contents, options){
 		var escapedContent = escapeContent(contents);
 		if(options && options.moduleName){
-			return util.format(SINGLE_MODULE_TPL, options.moduleName, options.moduleName, fileUrl, escapedContent);
+			if (options.declareModule === false) {
+				return util.format(TEMPLATE_DECLARED_MODULE, options.moduleName, fileUrl, escapedContent);
+			} else {
+				return util.format(SINGLE_MODULE_TPL, options.moduleName, options.moduleName, fileUrl, escapedContent);
+			}
 		}
 		else{
 			return util.format(TEMPLATE, fileUrl, fileUrl, escapedContent);
