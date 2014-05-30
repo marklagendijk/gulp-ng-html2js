@@ -37,6 +37,24 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
+		it("should use options.moduleName (function) when provided", function(done){
+			var expectedFile = new gutil.File({
+				path: "test/expected/exampleWithModuleName.js",
+				cwd: "test/",
+				base: "test/expected",
+				contents: fs.readFileSync("test/expected/exampleWithModuleNameFunction.js")
+			});
+
+			var params = {
+				moduleName: function (file) {
+					String(typeof file).should.equal('object');
+					return 'okiedokie';
+				}
+			};
+
+			testBufferedFile(params, expectedFile, done);
+		});
+
 		it("should use options.moduleName && options.declareModule when provided", function(done){
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithModuleName.js",
@@ -83,7 +101,7 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
-		it("should allow a custom function to rename the generate file", function(done){
+		it("should allow a custom function to rename the generated file", function(done){
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithRename.js",
 				cwd: "test/",

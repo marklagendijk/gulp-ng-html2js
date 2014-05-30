@@ -52,14 +52,40 @@ gulp.src("./partials/*.html")
 
 This way you end up with 1 single, minified Javascript file, which pre-loads all the (minified) HTML templates.
 
+If you have your modules sorted into directories that match the module name, you could do something like this:
+
+```
+// This picks up files like this:
+//   partials/date-picker/year.html (as well as month.html, day.html)
+//   partials/expanded-combo-box/combobox.html
+//   partials/forms/feedback.html (as well as survey.html, contact.html)
+// Returns modules like this:
+//   datePicker, expandedComboBox, forms
+gulp.src("./partials/**/*.html")
+    .pipe(ngHtml2Js({
+		moduleName: function (file) {
+			var path = file.split('/'),
+			    folder = path[path.length - 2];
+			return folder.replace(/-[a-z]/g, function (match) {
+				return match.substr(1).toUpperCase();
+			});
+		}
+	}))
+	.pipe(concat("partials.min.js"))
+	.pipe(gulp.dest('./dist/partials'));
+}
+```
+
 ## API
 
 ### ngHtml2Js(options)
 
 #### options.moduleName
-Type: `String`
+Type: `String` or `Function`
 
 The name of the generated AngularJS module. Uses the file url if omitted.
+
+When this is a function, the returned value will be the module name.  The function will be passed the vinyl file object so the module name can be determined from the path, content, last access time or any other property.  Returning `undefined` will fall back to the file url.
 
 #### options.declareModule
 Type: `Boolean`

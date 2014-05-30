@@ -42,7 +42,7 @@ module.exports = function(options){
 
 		if(file.isBuffer()){
 			var filePath = getFileUrl(file, options);
-			file.contents = new Buffer(generateModuleDeclaration(filePath, String(file.contents), options));
+			file.contents = new Buffer(generateModuleDeclaration(filePath, file, options));
 			file.path = gutil.replaceExtension(file.path, ".js");
 		}
 
@@ -52,18 +52,24 @@ module.exports = function(options){
 	/**
 	 * Generates the Javascript code containing the AngularJS module which puts the HTML file into the $templateCache.
 	 * @param fileUrl - The url with which the HTML will be registered in the $templateCache.
-	 * @param contents - The contents of the HTML file.
+	 * @param file - The vinyl file object.
 	 * @param [options] - The plugin options
 	 * @param [options.moduleName] - The name of the module which will be generated. When omitted the fileUrl will be used.
 	 * @returns {string} - The generated Javascript code.
 	 */
-	function generateModuleDeclaration(fileUrl, contents, options){
-		var escapedContent = escapeContent(contents);
+	function generateModuleDeclaration(fileUrl, file, options){
+		var escapedContent = escapeContent(String(file.contents)), moduleName;
 		if(options && options.moduleName){
+			moduleName = options.moduleName;
+			if (typeof moduleName === 'function') {
+				moduleName = moduleName(file);
+			}
+		}
+		if (moduleName) {
 			if (options.declareModule === false) {
-				return util.format(TEMPLATE_DECLARED_MODULE, options.moduleName, fileUrl, escapedContent);
+				return util.format(TEMPLATE_DECLARED_MODULE, moduleName, fileUrl, escapedContent);
 			} else {
-				return util.format(SINGLE_MODULE_TPL, options.moduleName, options.moduleName, fileUrl, escapedContent);
+				return util.format(SINGLE_MODULE_TPL, moduleName, moduleName, fileUrl, escapedContent);
 			}
 		}
 		else{
