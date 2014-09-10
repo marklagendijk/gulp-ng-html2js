@@ -2,6 +2,8 @@ var util = require("util");
 var gutil = require("gulp-util");
 var map = require("map-stream");
 
+var TEMPLATE_PUT = "$templateCache.put(\'%s\',\n    \'%s\');";
+
 var TEMPLATE = "angular.module(\'%s\', []).run([\'$templateCache\', function($templateCache) {\n" +
 	"  $templateCache.put(\'%s\',\n    \'%s\');\n" +
 	"}]);\n";
@@ -59,6 +61,9 @@ module.exports = function(options){
 	 */
 	function generateModuleDeclaration(fileUrl, file, options){
 		var escapedContent = escapeContent(String(file.contents)), moduleName;
+		if (options && options.externalModule && options.externalModule === true) {
+			return util.format(TEMPLATE_PUT, fileUrl, escapedContent);
+		}
 		if(options && options.moduleName){
 			moduleName = options.moduleName;
 			if (typeof moduleName === 'function') {
