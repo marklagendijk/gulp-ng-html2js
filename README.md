@@ -54,7 +54,7 @@ This way you end up with 1 single, minified Javascript file, which pre-loads all
 
 If you have your modules sorted into directories that match the module name, you could do something like this:
 
-```
+```javascript
 // This picks up files like this:
 //   partials/date-picker/year.html (as well as month.html, day.html)
 //   partials/expanded-combo-box/combobox.html
