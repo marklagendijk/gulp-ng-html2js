@@ -118,6 +118,21 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
+		it("should generate put-calls only with options.externalModule", function(done){
+			var expectedFile = new gutil.File({
+				path: "test/expected/exampleWithExternalModule.js",
+				cwd: "test/",
+				base: "test/expected",
+				contents: fs.readFileSync("test/expected/exampleWithExternalModule.js")
+			});
+
+			var params = {
+				externalModule: true
+			};
+
+			testBufferedFile(params, expectedFile, done);
+		});
+
 		function testBufferedFile(params, expectedFile, done){
 			var srcFile = new gutil.File({
 				path: "test/fixtures/example.html",
