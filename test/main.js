@@ -86,6 +86,23 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
+		it("should call options.prefix if it is a function", function(done){
+			var expectedFile = new gutil.File({
+				path: "test/expected/exampleWithPrefixFunction.js",
+				cwd: "test/",
+				base: "test/expected",
+				contents: fs.readFileSync("test/expected/exampleWithPrefixFunction.js")
+			});
+
+			var params = {
+				prefix: function(file) {
+                    return '/foobar/'
+                }
+			};
+
+			testBufferedFile(params, expectedFile, done);
+		});
+
 		it("should subtract options.stripPrefix from the url in the generated file", function(done){
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithStripPrefix.js",

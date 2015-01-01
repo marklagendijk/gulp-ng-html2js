@@ -76,6 +76,19 @@ gulp.src("./partials/**/*.html")
 }
 ```
 
+Prefix can take a string or function
+```javascript
+gulp.src("./partials/**/*.html")
+    .pipe(ngHtml2Js({
+		prefix: function (file) {
+            return file.path.split('/')[0]
+		}
+	}))
+	.pipe(concat("partials.min.js"))
+	.pipe(gulp.dest('./dist/partials'));
+}
+```
+
 ## API
 
 ### ngHtml2Js(options)

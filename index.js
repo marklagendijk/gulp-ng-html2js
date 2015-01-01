@@ -99,7 +99,11 @@ module.exports = function(options){
 		}
 		// Add the prefix
 		if(options && options.prefix){
-			url = options.prefix + url;
+			if(typeof options.prefix === 'function'){
+				url = options.prefix(file, options) + url;
+			} else {
+				url = options.prefix + url;
+			}
 		}
 
 		// Rename the url
