@@ -22,6 +22,40 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(null, expectedFile, done);
 		});
 
+		describe("when options.export is provided", function(){
+			it("should use options.export when provided", function(done){
+				var expectedFile = new gutil.File({
+					path: "test/expected/exampleWithExport.js",
+					cwd: "test/",
+					base: "test/expected",
+					contents: fs.readFileSync("test/expected/exampleWithExport.js")
+				});
+
+				var params = {
+					export: "commonjs"
+				};
+
+				testBufferedFile(params, expectedFile, done);
+			});
+
+			it("should use options.moduleName && options.declareModule when provided", function(done){
+				var expectedFile = new gutil.File({
+					path: "test/expected/exampleWithExportModuleNameNoGenerate.js",
+					cwd: "test/",
+					base: "test/expected",
+					contents: fs.readFileSync("test/expected/exampleWithExportModuleNameNoGenerate.js")
+				});
+
+				var params = {
+					moduleName: "myAwesomePartials",
+					declareModule: false,
+					export: "commonjs"
+				};
+
+				testBufferedFile(params, expectedFile, done);
+			});
+		});
+
 		it("should use options.moduleName when provided", function(done){
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithModuleName.js",
@@ -57,7 +91,7 @@ describe("gulp-ng-html2js", function(){
 
 		it("should use options.moduleName && options.declareModule when provided", function(done){
 			var expectedFile = new gutil.File({
-				path: "test/expected/exampleWithModuleName.js",
+				path: "test/expected/exampleWithModuleNameNoGenerate.js",
 				cwd: "test/",
 				base: "test/expected",
 				contents: fs.readFileSync("test/expected/exampleWithModuleNameNoGenerate.js")
