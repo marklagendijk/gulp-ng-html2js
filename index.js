@@ -21,6 +21,8 @@ var SINGLE_MODULE_TPL = "(function(module) {\n" +
 	"}]);\n" +
 	"})();\n";
 
+var COMMON_JS_EXPORTS = "module.exports = ";
+
 /**
  * Converts HTML files into Javascript files which contain an AngularJS module which automatically pre-loads the HTML
  * file into the [$templateCache](http://docs.angularjs.org/api/ng.$templateCache). This way AngularJS doens't need to
@@ -65,16 +67,25 @@ module.exports = function(options){
 				moduleName = moduleName(file);
 			}
 		}
+
+		var result;
+
 		if (moduleName) {
 			if (options.declareModule === false) {
-				return util.format(TEMPLATE_DECLARED_MODULE, moduleName, fileUrl, escapedContent);
+				result = util.format(TEMPLATE_DECLARED_MODULE, moduleName, fileUrl, escapedContent);
 			} else {
 				return util.format(SINGLE_MODULE_TPL, moduleName, moduleName, fileUrl, escapedContent);
 			}
 		}
 		else{
-			return util.format(TEMPLATE, fileUrl, fileUrl, escapedContent);
+			result = util.format(TEMPLATE, fileUrl, fileUrl, escapedContent);
 		}
+
+		if (options && options.export === 'commonjs') {
+			result = COMMON_JS_EXPORTS + result;
+		}
+
+		return result;
 	}
 
 	/**

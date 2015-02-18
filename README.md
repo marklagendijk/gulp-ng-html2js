@@ -115,6 +115,11 @@ function (url) {
 }
 ```
 
+### options.export
+Type: `String`
+
+If the value of the option is `commonjs`, export the angular module using `module.exports =`. Note this does not export anything with `declareModule` set to `true`.
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
