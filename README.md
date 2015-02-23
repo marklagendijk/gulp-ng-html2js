@@ -131,10 +131,7 @@ Example
 
 ``` javascript
 {
-  template: 
-    "angular.module('<%= moduleName %>').run(['$templateCache', function($templateCache) {\n" +
-    "  $templateCache.put('<%= template.url %>',\n    '<%= template.escapedContent %>');\n" +
-    "}]);\n"
+  template: "$templateCache.put('<%= template.url %>', '<%= template.escapedContent %>');"
 }
 ```
 
