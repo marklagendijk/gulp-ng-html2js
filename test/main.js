@@ -9,9 +9,9 @@ var should = require("should");
 var gutil = require("gulp-util");
 var ngHtml2Js = require("../");
 
-describe("gulp-ng-html2js", function(){
-	describe("when file is provided via buffer", function(){
-		it("should generate the angular module", function(done){
+describe("gulp-ng-html2js", function () {
+	describe("when file is provided via buffer", function () {
+		it("should generate the angular module", function (done) {
 			var expectedFile = new gutil.File({
 				path: "test/expected/example.js",
 				cwd: "test/",
@@ -22,7 +22,7 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(null, expectedFile, done);
 		});
 
-		it("should use options.moduleName when provided", function(done){
+		it("should use options.moduleName when provided", function (done) {
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithModuleName.js",
 				cwd: "test/",
@@ -37,7 +37,7 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
-		it("should use options.moduleName (function) when provided", function(done){
+		it("should use options.moduleName (function) when provided", function (done) {
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithModuleName.js",
 				cwd: "test/",
@@ -55,7 +55,7 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
-		it("should use options.moduleName && options.declareModule when provided", function(done){
+		it("should use options.moduleName && options.declareModule when provided", function (done) {
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithModuleName.js",
 				cwd: "test/",
@@ -71,7 +71,7 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
-		it("should add options.prefix to the url in the generated file", function(done){
+		it("should add options.prefix to the url in the generated file", function (done) {
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithPrefix.js",
 				cwd: "test/",
@@ -86,7 +86,7 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
-		it("should subtract options.stripPrefix from the url in the generated file", function(done){
+		it("should subtract options.stripPrefix from the url in the generated file", function (done) {
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithStripPrefix.js",
 				cwd: "test/",
@@ -101,7 +101,7 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
-		it("should allow a custom function to rename the generated file", function(done){
+		it("should allow a custom function to rename the generated file", function (done) {
 			var expectedFile = new gutil.File({
 				path: "test/expected/exampleWithRename.js",
 				cwd: "test/",
@@ -118,7 +118,23 @@ describe("gulp-ng-html2js", function(){
 			testBufferedFile(params, expectedFile, done);
 		});
 
-		function testBufferedFile(params, expectedFile, done){
+		it("should allow using a custom template", function (done) {
+			var expectedFile = new gutil.File({
+				path: "test/expected/exampleWithCustomTemplate.js",
+				cwd: "test/",
+				base: "test/expected",
+				contents: fs.readFileSync("test/expected/exampleWithCustomTemplate.js")
+			});
+
+			var params = {
+				template: "$templateCache.put('<%= template.url %>', '<%= template.escapedContent %>');"
+			};
+
+			testBufferedFile(params, expectedFile, done);
+		});
+
+
+		function testBufferedFile(params, expectedFile, done) {
 			var srcFile = new gutil.File({
 				path: "test/fixtures/example.html",
 				cwd: "test/",
@@ -128,7 +144,7 @@ describe("gulp-ng-html2js", function(){
 
 			var stream = ngHtml2Js(params);
 
-			stream.on("data", function(newFile){
+			stream.on("data", function (newFile) {
 				should.exist(newFile);
 				path.extname(newFile.path).should.equal(".js");
 
@@ -143,7 +159,7 @@ describe("gulp-ng-html2js", function(){
 		}
 	});
 
-	it("should pass on files which are null", function(done){
+	it("should pass on files which are null", function (done) {
 		var srcFile = new gutil.File({
 			path: "test/fixtures/example.html",
 			cwd: "test/",
@@ -153,7 +169,7 @@ describe("gulp-ng-html2js", function(){
 
 		var stream = ngHtml2Js();
 
-		stream.on("data", function(newFile){
+		stream.on("data", function (newFile) {
 			should.not.exist(newFile.contents);
 			done();
 		});
@@ -162,7 +178,7 @@ describe("gulp-ng-html2js", function(){
 		stream.end();
 	});
 
-	it("should error on stream", function(done){
+	it("should error on stream", function (done) {
 		var srcFile = new gutil.File({
 			path: "test/fixtures/example.html",
 			cwd: "test/",
@@ -172,13 +188,13 @@ describe("gulp-ng-html2js", function(){
 
 		var stream = ngHtml2Js();
 
-		stream.on("error", function(err){
+		stream.on("error", function (err) {
 			should.exist(err);
 			done();
 		});
 
-		stream.on("data", function(newFile){
-			newFile.contents.pipe(es.wait(function(err, data){
+		stream.on("data", function (newFile) {
+			newFile.contents.pipe(es.wait(function (err, data) {
 				done(err);
 			}));
 		});

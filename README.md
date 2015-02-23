@@ -64,8 +64,8 @@ If you have your modules sorted into directories that match the module name, you
 gulp.src("./partials/**/*.html")
     .pipe(ngHtml2Js({
 		moduleName: function (file) {
-			var path = file.split('/'),
-			    folder = path[path.length - 2];
+			var pathParts = file.path.split('/');
+			var folder = pathParts[pathParts.length - 2];
 			return folder.replace(/-[a-z]/g, function (match) {
 				return match.substr(1).toUpperCase();
 			});
@@ -109,9 +109,32 @@ Type: `Function`
 
 A function that allows the generate file url to be manipulated. For example:
 
+``` javascript
+function (templateUrl, templateFile) {
+  return templateUrl.replace('.tpl.html', '.html');
+}
 ```
-function (url) {
-  return url.replace('.tpl.html', '.html');
+
+#### options.template
+Type: `String`
+
+A custom Lodash template for generating the Javacript code. The template is called with the following params:
+
+- moduleName: the resulting module name.
+- template
+    * url: the resulting template url.
+    * content: the HTML content of the input file.
+    * escapedContent: the escaped HTML content of the input file. Note: the HTML content is escaped for usage in a single quoted string.
+    * prettyEscapedContent: the readable, escaped HTML content of the input file.
+    
+Example
+
+``` javascript
+{
+  template: 
+    "angular.module('<%= moduleName %>').run(['$templateCache', function($templateCache) {\n" +
+    "  $templateCache.put('<%= template.url %>',\n    '<%= template.escapedContent %>');\n" +
+    "}]);\n"
 }
 ```
 

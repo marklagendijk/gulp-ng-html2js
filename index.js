@@ -1,25 +1,27 @@
-var util = require("util");
+var _ = require("lodash");
 var gutil = require("gulp-util");
 var map = require("map-stream");
 
-var TEMPLATE = "angular.module(\'%s\', []).run([\'$templateCache\', function($templateCache) {\n" +
-	"  $templateCache.put(\'%s\',\n    \'%s\');\n" +
-	"}]);\n";
+var TEMPLATES = {
+    MODULE_PER_FILE: "angular.module('<%= moduleName %>', []).run(['$templateCache', function($templateCache) {\n" +
+    "  $templateCache.put('<%= template.url %>',\n    '<%= template.prettyEscapedContent %>');\n" +
+    "}]);\n",
 
-var TEMPLATE_DECLARED_MODULE = "angular.module(\'%s\').run([\'$templateCache\', function($templateCache) {\n" +
-	"  $templateCache.put(\'%s\',\n    \'%s\');\n" +
-	"}]);\n";
+    SINGLE_MODULE: "(function(module) {\n" +
+    "try {\n" +
+    "  module = angular.module('<%= moduleName %>');\n" +
+    "} catch (e) {\n" +
+    "  module = angular.module('<%= moduleName %>', []);\n" +
+    "}\n" +
+    "module.run(['$templateCache', function($templateCache) {\n" +
+    "  $templateCache.put('<%= template.url %>',\n    '<%= template.prettyEscapedContent %>');\n" +
+    "}]);\n" +
+    "})();\n",
 
-var SINGLE_MODULE_TPL = "(function(module) {\n" +
-	"try {\n" +
-	"  module = angular.module(\'%s\');\n" +
-	"} catch (e) {\n" +
-	"  module = angular.module(\'%s\', []);\n" +
-	"}\n" +
-	"module.run([\'$templateCache\', function($templateCache) {\n" +
-	"  $templateCache.put(\'%s\',\n    \'%s\');\n" +
-	"}]);\n" +
-	"})();\n";
+    SINGLE_DECLARED_MODULE: "angular.module('<%= moduleName %>').run(['$templateCache', function($templateCache) {\n" +
+    "  $templateCache.put('<%= template.url %>',\n    '<%= template.prettyEscapedContent %>');\n" +
+    "}]);\n"
+};
 
 /**
  * Converts HTML files into Javascript files which contain an AngularJS module which automatically pre-loads the HTML
@@ -32,92 +34,112 @@ var SINGLE_MODULE_TPL = "(function(module) {\n" +
  * @param [options.prefix] - The prefix which should be added to the start of the url
  * @returns {stream}
  */
-module.exports = function(options){
-	"use strict";
+module.exports = function (options) {
+    "use strict";
 
-	function ngHtml2Js(file, callback){
-		if(file.isStream()){
-			return callback(new Error("gulp-ng-html2js: Streaming not supported"));
-		}
+    function ngHtml2Js(file, callback) {
+        if (file.isStream()) {
+            return callback(new Error("gulp-ng-html2js: Streaming not supported"));
+        }
 
-		if(file.isBuffer()){
-			var filePath = getFileUrl(file, options);
-			file.contents = new Buffer(generateModuleDeclaration(filePath, file, options));
-			file.path = gutil.replaceExtension(file.path, ".js");
-		}
+        if (file.isBuffer()) {
+            file.contents = new Buffer(generateModuleDeclaration(file, options));
+            file.path = gutil.replaceExtension(file.path, ".js");
+        }
 
-		return callback(null, file);
-	}
+        return callback(null, file);
+    }
 
-	/**
-	 * Generates the Javascript code containing the AngularJS module which puts the HTML file into the $templateCache.
-	 * @param fileUrl - The url with which the HTML will be registered in the $templateCache.
-	 * @param file - The vinyl file object.
-	 * @param [options] - The plugin options
-	 * @param [options.moduleName] - The name of the module which will be generated. When omitted the fileUrl will be used.
-	 * @returns {string} - The generated Javascript code.
-	 */
-	function generateModuleDeclaration(fileUrl, file, options){
-		var escapedContent = escapeContent(String(file.contents)), moduleName;
-		if(options && options.moduleName){
-			moduleName = options.moduleName;
-			if (typeof moduleName === 'function') {
-				moduleName = moduleName(file);
-			}
-		}
-		if (moduleName) {
-			if (options.declareModule === false) {
-				return util.format(TEMPLATE_DECLARED_MODULE, moduleName, fileUrl, escapedContent);
-			} else {
-				return util.format(SINGLE_MODULE_TPL, moduleName, moduleName, fileUrl, escapedContent);
-			}
-		}
-		else{
-			return util.format(TEMPLATE, fileUrl, fileUrl, escapedContent);
-		}
-	}
+    function generateModuleDeclaration(templateFile, options) {
+        var template = getTemplate();
+        var templateParams = getTemplateParams();
 
-	/**
-	 * Generates the url of a file.
-	 * @param file - The file for which a url should be generated
-	 * @param [options] - The plugin options
-	 * @param [options.stripPrefix] - The prefix which should be stripped from the file path
-	 * @param [options.prefix] - The prefix which should be added to the start of the url
-	 * @param [options.rename] - A function that takes in the generated url and returns the desired manipulation.
-	 * @returns {string}
-	 */
-	function getFileUrl(file, options){
-		// Start with the relative file path
-		var url = file.relative;
+        return _.template(template)(templateParams);
 
-		// Replace '\' with '/' (Windows)
-		url = url.replace(/\\/g, "/");
 
-		// Remove the stripPrefix
-		if(options && options.stripPrefix && url.indexOf(options.stripPrefix) === 0){
-			url = url.replace(options.stripPrefix, "");
-		}
-		// Add the prefix
-		if(options && options.prefix){
-			url = options.prefix + url;
-		}
+        function getTemplate() {
+            if (options && options.template) {
+                return options.template;
+            }
+            else if (options && options.moduleName) {
+                if (options.declareModule === false) {
+                    return TEMPLATES.SINGLE_DECLARED_MODULE;
+                }
+                else {
+                    return TEMPLATES.SINGLE_MODULE;
+                }
+            }
+            else {
+                return TEMPLATES.MODULE_PER_FILE;
+            }
+        }
 
-		// Rename the url
-		if(options && options.rename){
-			url = options.rename(url);
-		}
+        function getTemplateParams() {
+            var params = {
+                template: {
+                    url: getTemplateUrl()
+                }
+            };
+            params.moduleName = getModuleName(params.template.url);
+            params.template.content = String(templateFile.contents);
+            params.template.escapedContent = getEscapedTemplateContent(params.template.content);
+            params.template.prettyEscapedContent = getPrettyEscapedContent(params.template.content);
 
-		return url;
-	}
+            return params;
+        }
 
-	/**
-	 * Escapes the content of an string so it can be used in a Javascript string declaration
-	 * @param {string} content
-	 * @returns {string}
-	 */
-	function escapeContent(content){
-		return content.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\r?\n/g, "\\n' +\n    '");
-	}
+        function getModuleName(templateUrl) {
+            if (options && _.isFunction(options.moduleName)) {
+                return options.moduleName(templateFile);
+            }
+            else if (options && options.moduleName) {
+                return options.moduleName;
+            }
+            else {
+                return templateUrl;
+            }
+        }
 
-	return map(ngHtml2Js);
+        function getTemplateUrl() {
+            // Start with the relative file path
+            var url = templateFile.relative;
+
+            // Replace '\' with '/' (Windows)
+            url = url.replace(/\\/g, "/");
+
+            if (options) {
+                // Remove the stripPrefix
+                if (_.startsWith(url, options.stripPrefix)) {
+                    url = url.replace(options.stripPrefix, "");
+                }
+                // Add the prefix
+                if (options.prefix) {
+                    url = options.prefix + url;
+                }
+
+                // Rename the url
+                if (_.isFunction(options.rename)) {
+                    url = options.rename(url, templateFile);
+                }
+            }
+
+            return url;
+        }
+    }
+
+    function getEscapedTemplateContent(templateContent) {
+        return templateContent
+            .replace(/\\/g, "\\\\")
+            .replace(/'/g, "\\'")
+            .replace(/\r?\n/g, "\\n");
+    }
+
+    function getPrettyEscapedContent(templateContent) {
+        return templateContent
+            .replace(/\\/g, "\\\\")
+            .replace(/'/g, "\\'")
+            .replace(/\r?\n/g, "\\n' +\n    '");
+    }
+
+    return map(ngHtml2Js);
 };
