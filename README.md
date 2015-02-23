@@ -64,7 +64,7 @@ If you have your modules sorted into directories that match the module name, you
 gulp.src("./partials/**/*.html")
     .pipe(ngHtml2Js({
 		moduleName: function (file) {
-			var path = file.split('/'),
+			var path = file.path.split('/'),
 			    folder = path[path.length - 2];
 			return folder.replace(/-[a-z]/g, function (match) {
 				return match.substr(1).toUpperCase();
