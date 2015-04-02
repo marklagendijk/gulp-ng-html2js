@@ -22,7 +22,9 @@ var TEMPLATES = {
     "  $templateCache.put('<%= template.url %>',\n    '<%= template.prettyEscapedContent %>');\n" +
     "}]);\n",
 
-	COMMON_JS_EXPORTS: "module.exports = "
+	COMMON_JS_EXPORTS: "module.exports = ",
+
+	SYSTEM_JS_EXPORTS: "export default "
 };
 
 /**
@@ -79,6 +81,9 @@ module.exports = function (options) {
 
 			if (options && options.export === 'commonjs') {
 				template = TEMPLATES.COMMON_JS_EXPORTS + template;
+			}
+			else if (options && options.export === 'system') {
+				template = TEMPLATES.SYSTEM_JS_EXPORTS + template;
 			}
 
 			return template;

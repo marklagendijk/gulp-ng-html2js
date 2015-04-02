@@ -23,12 +23,12 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		describe("when options.export is provided", function(){
-			it("should use options.export when provided", function(done){
+			it("commonjs", function(done){
 				var expectedFile = new gutil.File({
-					path: "test/expected/exampleWithExport.js",
+					path: "test/expected/exampleWithExportCommon.js",
 					cwd: "test/",
 					base: "test/expected",
-					contents: fs.readFileSync("test/expected/exampleWithExport.js")
+					contents: fs.readFileSync("test/expected/exampleWithExportCommon.js")
 				});
 
 				var params = {
@@ -38,18 +38,50 @@ describe("gulp-ng-html2js", function () {
 				testBufferedFile(params, expectedFile, done);
 			});
 
-			it("should use options.moduleName && options.declareModule when provided", function(done){
+			it("should use common, options.moduleName && options.declareModule when provided", function(done){
 				var expectedFile = new gutil.File({
-					path: "test/expected/exampleWithExportModuleNameNoGenerate.js",
+					path: "test/expected/exampleWithExportCommonModuleNameNoGenerate.js",
 					cwd: "test/",
 					base: "test/expected",
-					contents: fs.readFileSync("test/expected/exampleWithExportModuleNameNoGenerate.js")
+					contents: fs.readFileSync("test/expected/exampleWithExportCommonModuleNameNoGenerate.js")
 				});
 
 				var params = {
 					moduleName: "myAwesomePartials",
 					declareModule: false,
 					export: "commonjs"
+				};
+
+				testBufferedFile(params, expectedFile, done);
+			});
+
+			it("system", function(done){
+				var expectedFile = new gutil.File({
+					path: "test/expected/exampleWithExportSystem.js",
+					cwd: "test/",
+					base: "test/expected",
+					contents: fs.readFileSync("test/expected/exampleWithExportSystem.js")
+				});
+
+				var params = {
+					export: "system"
+				};
+
+				testBufferedFile(params, expectedFile, done);
+			});
+
+			it("should use system, options.moduleName && options.declareModule when provided", function(done){
+				var expectedFile = new gutil.File({
+					path: "test/expected/exampleWithExportSystemModuleNameNoGenerate.js",
+					cwd: "test/",
+					base: "test/expected",
+					contents: fs.readFileSync("test/expected/exampleWithExportSystemModuleNameNoGenerate.js")
+				});
+
+				var params = {
+					moduleName: "myAwesomePartials",
+					declareModule: false,
+					export: "system"
 				};
 
 				testBufferedFile(params, expectedFile, done);

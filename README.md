@@ -138,13 +138,22 @@ Example
 ### options.export
 Type: `String`
 
-If the value of the option is `commonjs`, export the angular module using `module.exports =`. Note this does not export anything with `declareModule` set to `true`.
+* `commonjs`: export the angular module using `module.exports =`
+* `system`: export the angular module using `export default`
+
+> Note this does not export anything with `declareModule` set to `true`.
 
 Example
 
 ``` javascript
 {
   export: 'commonjs'
+}
+```
+
+``` javascript
+{
+  export: 'system'
 }
 ```
 
