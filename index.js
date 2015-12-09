@@ -44,7 +44,11 @@ module.exports = function (options) {
 
         if (file.isBuffer()) {
             file.contents = new Buffer(generateModuleDeclaration(file, options));
-            file.path = gutil.replaceExtension(file.path, ".js");
+            var extension = '.js';
+            if(options.extension) {
+              extension = options.extension;
+            }
+            file.path = gutil.replaceExtension(file.path, extension);
         }
 
         return callback(null, file);
