@@ -126,7 +126,7 @@ A custom Lodash template for generating the Javacript code. The template is call
     * content: the HTML content of the input file.
     * escapedContent: the escaped HTML content of the input file. Note: the HTML content is escaped for usage in a single quoted string.
     * prettyEscapedContent: the readable, escaped HTML content of the input file.
-    
+
 Example
 
 ``` javascript
@@ -134,6 +134,11 @@ Example
   template: "$templateCache.put('<%= template.url %>', '<%= template.escapedContent %>');"
 }
 ```
+
+#### options.extension
+Type: `String`
+
+The file extension of the generated files. Defaults to .js. Can be used to generate TypeScript files and create a gulp TypeScript - job to convert them. For a working example take a look at [angular-systemjs-typescript-boilerplate](https://github.com/INSPIRATIONlabs/angular-systemjs-typescript-boilerplate)
 
 ## License
 
