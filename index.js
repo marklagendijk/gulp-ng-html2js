@@ -20,7 +20,11 @@ var TEMPLATES = {
 
     SINGLE_DECLARED_MODULE: "angular.module('<%= moduleName %>').run(['$templateCache', function($templateCache) {\n" +
     "  $templateCache.put('<%= template.url %>',\n    '<%= template.prettyEscapedContent %>');\n" +
-    "}]);\n"
+    "}]);\n",
+
+	COMMON_JS_EXPORTS: "module.exports = ",
+
+	SYSTEM_JS_EXPORTS: "export default "
 };
 
 /**
@@ -62,20 +66,31 @@ module.exports = function (options) {
 
 
         function getTemplate() {
+          var template;
+
             if (options && options.template) {
                 return options.template;
             }
             else if (options && options.moduleName) {
                 if (options.declareModule === false) {
-                    return TEMPLATES.SINGLE_DECLARED_MODULE;
+                    template = TEMPLATES.SINGLE_DECLARED_MODULE;
                 }
                 else {
                     return TEMPLATES.SINGLE_MODULE;
                 }
             }
             else {
-                return TEMPLATES.MODULE_PER_FILE;
+                template = TEMPLATES.MODULE_PER_FILE;
             }
+
+			if (options && options.export === 'commonjs') {
+				template = TEMPLATES.COMMON_JS_EXPORTS + template;
+			}
+			else if (options && options.export === 'system') {
+				template = TEMPLATES.SYSTEM_JS_EXPORTS + template;
+			}
+
+			return template;
         }
 
         function getTemplateParams() {
