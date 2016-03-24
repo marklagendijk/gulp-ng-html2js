@@ -9,17 +9,17 @@
     "html2js",
     "angularjs"
   ],
-  "homepage": "https://github.com/marklagendijk/gulp-ng-html2js",
-  "bugs": "https://github.com/marklagendijk/gulp-ng-html2js/issues",
+  "homepage": "https://github.com/DmitryEfimenko/gulp-ng-html2js",
+  "bugs": "https://github.com/DmitryEfimenko/gulp-ng-html2js/issues",
   "author": {
-    "name": "Mark Lagendijk",
-    "email": "mark@lagendijk.info",
-    "url": "https://github.com/marklagendijk"
+    "name": "Dmitry Efimenko",
+    "email": "dmitrief@gmail.com",
+    "url": "https://github.com/DmitryEfimenko"
   },
   "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/marklagendijk/gulp-ng-html2js.git"
+    "url": "git://github.com/DmitryEfimenko/gulp-ng-html2js.git"
   },
   "scripts": {
     "test": "mocha"
