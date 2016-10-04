@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "gulp-util": "*",
-    "lodash": "^3.3.0",
+    "lodash": ">=3.3 <5",
     "map-stream": "*"
   },
   "devDependencies": {
