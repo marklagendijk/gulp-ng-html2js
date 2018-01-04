@@ -1,5 +1,5 @@
 var _ = require("lodash");
-var gutil = require("gulp-util");
+var replaceExtension = require('replace-ext');
 var map = require("map-stream");
 
 var TEMPLATES = {
@@ -52,7 +52,7 @@ module.exports = function (options) {
             if(options && options.extension) {
               extension = options.extension;
             }
-            file.path = gutil.replaceExtension(file.path, extension);
+            file.path = replaceExtension(file.path, extension);
         }
 
         return callback(null, file);

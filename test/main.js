@@ -6,13 +6,13 @@ var fs = require("fs");
 var path = require("path");
 var es = require("event-stream");
 var should = require("should");
-var gutil = require("gulp-util");
+var Vinyl = require("vinyl");
 var ngHtml2Js = require("../");
 
 describe("gulp-ng-html2js", function () {
 	describe("when file is provided via buffer", function () {
 		it("should generate the angular module", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/example.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -24,7 +24,7 @@ describe("gulp-ng-html2js", function () {
 
 		describe("when options.export is provided", function(){
 			it("commonjs", function(done){
-				var expectedFile = new gutil.File({
+				var expectedFile = new Vinyl({
 					path: "test/expected/exampleWithExportCommon.js",
 					cwd: "test/",
 					base: "test/expected",
@@ -39,7 +39,7 @@ describe("gulp-ng-html2js", function () {
 			});
 
 			it("should use common, options.moduleName && options.declareModule when provided", function(done){
-				var expectedFile = new gutil.File({
+				var expectedFile = new Vinyl({
 					path: "test/expected/exampleWithExportCommonModuleNameNoGenerate.js",
 					cwd: "test/",
 					base: "test/expected",
@@ -56,7 +56,7 @@ describe("gulp-ng-html2js", function () {
 			});
 
 			it("system", function(done){
-				var expectedFile = new gutil.File({
+				var expectedFile = new Vinyl({
 					path: "test/expected/exampleWithExportSystem.js",
 					cwd: "test/",
 					base: "test/expected",
@@ -71,7 +71,7 @@ describe("gulp-ng-html2js", function () {
 			});
 
 			it("should use system, options.moduleName && options.declareModule when provided", function(done){
-				var expectedFile = new gutil.File({
+				var expectedFile = new Vinyl({
 					path: "test/expected/exampleWithExportSystemModuleNameNoGenerate.js",
 					cwd: "test/",
 					base: "test/expected",
@@ -89,7 +89,7 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		it("should use options.moduleName when provided", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/exampleWithModuleName.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -104,7 +104,7 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		it("should use options.moduleName (function) when provided", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/exampleWithModuleName.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -122,7 +122,7 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		it("should use options.moduleName && options.declareModule when provided", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/exampleWithModuleNameNoGenerate.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -138,7 +138,7 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		it("should add options.prefix to the url in the generated file", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/exampleWithPrefix.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -153,7 +153,7 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		it("should subtract options.stripPrefix from the url in the generated file", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/exampleWithStripPrefix.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -168,7 +168,7 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		it("should allow a custom function to rename the generated file", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/exampleWithRename.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -185,7 +185,7 @@ describe("gulp-ng-html2js", function () {
 		});
 
 		it("should allow using a custom template", function (done) {
-			var expectedFile = new gutil.File({
+			var expectedFile = new Vinyl({
 				path: "test/expected/exampleWithCustomTemplate.js",
 				cwd: "test/",
 				base: "test/expected",
@@ -201,7 +201,7 @@ describe("gulp-ng-html2js", function () {
 
 
 		function testBufferedFile(params, expectedFile, done) {
-			var srcFile = new gutil.File({
+			var srcFile = new Vinyl({
 				path: "test/fixtures/example.html",
 				cwd: "test/",
 				base: "test",
@@ -226,7 +226,7 @@ describe("gulp-ng-html2js", function () {
 	});
 
 	it("should pass on files which are null", function (done) {
-		var srcFile = new gutil.File({
+		var srcFile = new Vinyl({
 			path: "test/fixtures/example.html",
 			cwd: "test/",
 			base: "test/fixtures",
@@ -245,7 +245,7 @@ describe("gulp-ng-html2js", function () {
 	});
 
 	it("should error on stream", function (done) {
-		var srcFile = new gutil.File({
+		var srcFile = new Vinyl({
 			path: "test/fixtures/example.html",
 			cwd: "test/",
 			base: "test/fixtures",
