@@ -136,7 +136,7 @@ Example
 }
 ```
 
-#### options.extension
+### options.extension
 Type: `String`
 
 The file extension of the generated files. Defaults to .js. Can be used to generate TypeScript files and create a gulp TypeScript - job to convert them. For a working example take a look at [angular-systemjs-typescript-boilerplate](https://github.com/INSPIRATIONlabs/angular-systemjs-typescript-boilerplate)
@@ -161,6 +161,22 @@ Example
 {
   export: 'system'
 }
+```
+
+### ngHtml2Js.generateModuleDeclaration(templateFile, options)
+Allows to run plugin outside of the pipe context.
+
+Example
+
+```javascript
+var vinylFile = require('vinyl-file');
+var ngHtml2Js = require("gulp-ng-html2js");
+
+vinylFile.read('src/template.html').then(function(vf) {
+    var options = { moduleName: 'templates' }
+    var converted = ngHtml2Js.generateModuleDeclaration(vf, options);
+});
+
 ```
 
 ## License
